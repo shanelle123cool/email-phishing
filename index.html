@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Can You Spot the Phish?</title>
+ 
+    <style>
+
+        * {
+
+            box-sizing: border-box;
+
+        }
+ 
+        body {
+
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            background: #eef4ff;
+
+            color: #222;
+
+        }
+ 
+        header {
+
+            background: #173b7a;
+
+            color: white;
+
+            text-align: center;
+
+            padding: 30px 15px;
+
+        }
+ 
+        header h1 {
+
+            margin: 0 0 10px;
+
+            font-size: 32px;
+
+        }
+ 
+        header p {
+
+            margin: 0;
+
+            font-size: 17px;
+
+        }
+ 
+        .game-container {
+
+            max-width: 800px;
+
+            margin: 35px auto;
+
+            padding: 20px;
+
+        }
+ 
+        .score {
+
+            text-align: center;
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            margin-bottom: 20px;
+
+        }
+ 
+        .email {
+
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 25px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+
+            margin-bottom: 20px;
+
+        }
+ 
+        .email-header {
+
+            border-bottom: 1px solid #ddd;
+
+            padding-bottom: 15px;
+
+            margin-bottom: 20px;
+
+        }
+ 
+        .email-header p {
+
+            margin: 7px 0;
+
+        }
+ 
+        .email-body {
+
+            line-height: 1.6;
+
+            font-size: 16px;
+
+        }
+ 
+        .buttons {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+            margin-top: 20px;
+
+        }
+ 
+        button {
+
+            border: none;
+
+            border-radius: 8px;
+
+            padding: 14px 25px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+        }
+ 
+        .phishing-btn {
+
+            background: #d93025;
+
+            color: white;
+
+        }
+ 
+        .safe-btn {
+
+            background: #188038;
+
+            color: white;
+
+        }
+ 
+        button:hover {
+
+            opacity: 0.85;
+
+        }
+ 
+        .result {
+
+            display: none;
+
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            margin-top: 20px;
+
+            border-left: 6px solid #173b7a;
+
+        }
+ 
+        .next-btn,
+
+        .restart-btn {
+
+            background: #173b7a;
+
+            color: white;
+
+            margin-top: 15px;
+
+        }
+ 
+        .final-score {
+
+            text-align: center;
+
+            display: none;
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 12px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+
+        }
+ 
+        .final-score h2 {
+
+            font-size: 28px;
+
+        }
+ 
+        footer {
+
+            text-align: center;
+
+            padding: 25px;
+
+            color: #555;
+
+        }
+ 
+        @media (max-width: 600px) {
+
+            header h1 {
+
+                font-size: 26px;
+
+            }
+ 
+            .game-container {
+
+                margin: 15px auto;
+
+            }
+ 
+            .buttons {
+
+                flex-direction: column;
+
+            }
+ 
+            button {
+
+                width: 100%;
+
+            }
+
+        }
+</style>
+</head>
+ 
+<body>
+ 
+    <header>
+<h1>🎣 Can You Spot the Phish?</h1>
+<p>Test your ability to recognize phishing emails!</p>
+</header>
+ 
+    <main class="game-container">
+ 
+        <div class="score">
+
+            Question <span id="questionNumber">1</span> / 8
+&nbsp; | &nbsp;
+
+            Score: <span id="score">0</span>
+</div>
+ 
+        <div id="game">
+ 
+            <div class="email">
+ 
+                <div class="email-header">
+<p><strong>From:</strong> <span id="sender"></span></p>
+<p><strong>To:</strong> You</p>
+<p><strong>Subject:</strong> <span id="subject"></span></p>
+</div>
+ 
+                <div class="email-body">
+<p id="emailText"></p>
+</div>
+ 
+            </div>
+ 
+            <div class="buttons">
+<button class="phishing-btn" onclick="checkAnswer('phishing')">
+
+                    🚨 Phishing
+</button>
+ 
+                <button class="safe-btn" onclick="checkAnswer('safe')">
+
+                    ✅ Safe
+</button>
+</div>
+ 
+            <div class="result" id="result">
+<h3 id="resultTitle"></h3>
+<p id="explanation"></p>
+ 
+                <button class="next-btn" onclick="nextQuestion()">
+
+                    Next Email →
+</button>
+</div>
+ 
+        </div>
+ 
+        <div class="final-score" id="finalScore">
+<h2>🎉 Game Complete!</h2>
+ 
+            <p>
+
+                You scored
+<strong><span id="finalPoints">0</span>/8</strong>
+</p>
+ 
+            <p id="finalMessage"></p>
+ 
+            <button class="restart-btn" onclick="restartGame()">
+
+                🔄 Play Again
+</button>
+</div>
+ 
+    </main>
+ 
+    <footer>
+<p>Stay safe online. Think before you click! 🛡️</p>
+</footer>
+ 
+ 
+    <script>
+ 
+        const emails = [
+ 
+            {
+
+                sender: "security@paypa1-example.com",
+
+                subject: "URGENT: Your account will be locked!",
+
+                text: `
+
+                    Hello,
+ 
+                    We detected unusual activity on your account.
+
+                    Your account will be permanently locked today unless
+
+                    you verify your information immediately.
+ 
+                    Click the link below to confirm your account.
+ 
+                    Thank you,
+
+                    Security Team
+
+                `,
+
+                answer: "phishing",
+
+                explanation:
+
+                    "This is phishing because the sender address is suspicious, the message creates urgency, and it asks you to verify information through a link."
+
+            },
+ 
+            {
+
+                sender: "teacher@myschool.example",
+
+                subject: "Reminder: Science project due Friday",
+
+                text: `
+
+                    Hi,
+ 
+                    Just a reminder that your science project is due
+
+                    this Friday.
+ 
+                    Please remember to bring your project to class.
+ 
+                    Thanks!
+
+                `,
+
+                answer: "safe",
+
+                explanation:
+
+                    "This email does not contain common phishing warning signs. It does not ask for passwords, money, or personal information."
+
+            },
+ 
+            {
+
+                sender: "winner@free-prizes.example",
+
+                subject: "🎉 YOU WON $1,000,000!!!",
+
+                text: `
+
+                    CONGRATULATIONS!!!
+ 
+                    You have been selected to receive $1,000,000.
+ 
+                    To claim your prize, send us your full name,
+
+                    password, bank information, and address.
+ 
+                    ACT NOW!!!
+
+                `,
+
+                answer: "phishing",
+
+                explanation:
+
+                    "This is phishing. Unexpected prizes, requests for sensitive information, and extreme urgency are major warning signs."
+
+            },
+ 
+            {
+
+                sender: "library@citylibrary.example",
+
+                subject: "Your library book is due soon",
+
+                text: `
+
+                    Hello,
+ 
+                    This is a reminder that your library book is
+
+                    due next week.
+ 
+                    You can return it at the library during normal
+
+                    opening hours.
+ 
+                    Thank you!
+
+                `,
+
+                answer: "safe",
+
+                explanation:
+
+                    "This email is likely safe because it simply provides a reminder and does not request sensitive information or suspicious actions."
+
+            },
+ 
+            {
+
+                sender: "support@micros0ft-security.example",
+
+                subject: "Your password has expired",
+
+                text: `
+
+                    Dear User,
+ 
+                    Your password has expired.
+ 
+                    Click the link below and enter your current
+
+                    password and new password to keep your account.
+ 
+                    Failure to do this within 30 minutes will result
+
+                    in account deletion.
+
+                `,
+
+                answer: "phishing",
+
+                explanation:
+
+                    "This is phishing. The sender address is suspicious, the message threatens account deletion, and it asks for your password."
+
+            },
+ 
+            {
+
+                sender: "coach@school.example",
+
+                subject: "Basketball practice update",
+
+                text: `
+
+                    Hi everyone,
+ 
+                    Basketball practice tomorrow will start at
+
+                    4:00 PM instead of 3:30 PM.
+ 
+                    See you there!
+
+                `,
+
+                answer: "safe",
+
+                explanation:
+
+                    "This message is a normal schedule update and does not ask for passwords, money, or personal information."
+
+            },
+ 
+            {
+
+                sender: "account-alert@bank-security.example",
+
+                subject: "Suspicious payment detected",
+
+                text: `
+
+                    We detected a suspicious payment on your account.
+ 
+                    Do not reply to this message with your password
+
+                    or security code.
+ 
+                    Please contact your bank using the phone number
+
+                    on your bank card or official website.
+
+                `,
+
+                answer: "safe",
+
+                explanation:
+
+                    "This example is safe because it does not ask you to provide sensitive information through the email and tells you to contact the organization through an official source."
+
+            },
+ 
+            {
+
+                sender: "instagram.verify123@example.com",
+
+                subject: "Your account will be deleted",
+
+                text: `
+
+                    Your account has violated our rules.
+ 
+                    You have 10 minutes to confirm your account.
+ 
+                    Send us your password and verification code or
+
+                    your account will be permanently deleted.
+ 
+                    Click here NOW!
+
+                `,
+
+                answer: "phishing",
+
+                explanation:
+
+                    "This is phishing. It uses urgency, threatens account deletion, asks for a password and verification code, and uses a suspicious sender address."
+
+            }
+ 
+        ];
+ 
+ 
+        let currentQuestion = 0;
+
+        let score = 0;
+
+        let answered = false;
+ 
+ 
+        function loadQuestion() {
+ 
+            const email = emails[currentQuestion];
+ 
+            document.getElementById("sender").textContent = email.sender;
+
+            document.getElementById("subject").textContent = email.subject;
+
+            document.getElementById("emailText").textContent = email.text;
+ 
+            document.getElementById("questionNumber").textContent =
+
+                currentQuestion + 1;
+ 
+            document.getElementById("score").textContent = score;
+ 
+            document.getElementById("result").style.display = "none";
+ 
+            answered = false;
+
+        }
+ 
+ 
+        function checkAnswer(userAnswer) {
+ 
+            if (answered) {
+
+                return;
+
+            }
+ 
+            answered = true;
+ 
+            const email = emails[currentQuestion];
+ 
+            const result = document.getElementById("result");
+
+            const resultTitle = document.getElementById("resultTitle");
+
+            const explanation = document.getElementById("explanation");
+ 
+            if (userAnswer === email.answer) {
+ 
+                score++;
+ 
+                resultTitle.textContent = "✅ Correct!";
+
+                resultTitle.style.color = "#188038";
+ 
+            } else {
+ 
+                resultTitle.textContent = "❌ Not quite!";
+
+                resultTitle.style.color = "#d93025";
+
+            }
+ 
+            explanation.textContent = email.explanation;
+ 
+            document.getElementById("score").textContent = score;
+ 
+            result.style.display = "block";
+
+        }
+ 
+ 
+        function nextQuestion() {
+ 
+            currentQuestion++;
+ 
+            if (currentQuestion >= emails.length) {
+ 
+                showFinalScore();
+ 
+            } else {
+ 
+                loadQuestion();
+
+            }
+
+        }
+ 
+ 
+        function showFinalScore() {
+ 
+            document.getElementById("game").style.display = "none";
+ 
+            document.getElementById("finalScore").style.display = "block";
+ 
+            document.getElementById("finalPoints").textContent = score;
+ 
+            const message = document.getElementById("finalMessage");
+ 
+            if (score === 8) {
+ 
+                message.textContent =
+
+                    "🏆 Perfect score! You are great at spotting phishing emails!";
+ 
+            } else if (score >= 6) {
+ 
+                message.textContent =
+
+                    "👏 Great job! You know how to recognize most phishing attempts.";
+ 
+            } else if (score >= 4) {
+ 
+                message.textContent =
+
+                    "👍 Good start! Keep learning about phishing warning signs.";
+ 
+            } else {
+ 
+                message.textContent =
+
+                    "📚 Keep practicing! Learning the warning signs can help you stay safer online.";
+
+            }
+
+        }
+ 
+ 
+        function restartGame() {
+ 
+            currentQuestion = 0;
+
+            score = 0;
+ 
+            document.getElementById("game").style.display = "block";
+ 
+            document.getElementById("finalScore").style.display = "none";
+ 
+            loadQuestion();
+
+        }
+ 
+ 
+        // Start the game
+
+        loadQuestion();
+ 
+    </script>
+ 
+</body>
+</html>
+ 
