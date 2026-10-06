@@ -119,7 +119,1009 @@ body {
 }
 
 .email-body {
-    padding-top: 2
-```
+    padding-top: 25px;
+    line-height: 1.7;
+    font-size: 17px;
+}
 
- 
+.suspicious {
+    background: #fff0f0;
+    border-bottom: 3px solid #ea4335;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* ---------- BUTTONS ---------- */
+
+.answer-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.answer-buttons button,
+.next-button,
+.restart-button {
+    border: none;
+    border-radius: 25px;
+    padding: 13px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.phishing {
+    background: #ea4335;
+    color: white;
+}
+
+.safe {
+    background: #188038;
+    color: white;
+}
+
+.next-button,
+.restart-button {
+    background: #174ea6;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+/* ---------- RESULT ---------- */
+
+.result {
+    display: none;
+    background: white;
+    margin-top: 15px;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 6px solid #174ea6;
+}
+
+.result h3 {
+    margin-top: 0;
+}
+
+.clues {
+    margin-top: 12px;
+}
+
+.clue {
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 6px;
+    background: #f1f3f4;
+}
+
+.missed {
+    background: #fff0f0;
+    color: #b3261e;
+}
+
+/* ---------- FINAL SCREEN ---------- */
+
+.final {
+    display: none;
+    background: white;
+    text-align: center;
+    padding: 35px 20px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px #ccc;
+}
+
+.final h1 {
+    color: #174ea6;
+}
+
+.final-score {
+    font-size: 42px;
+    font-weight: bold;
+}
+
+.high-score {
+    margin: 15px;
+    font-size: 18px;
+}
+
+.review {
+    max-width: 700px;
+    margin: 25px auto;
+    text-align: left;
+}
+
+.review-item {
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    background: #f1f3f4;
+}
+
+.review-item strong {
+    color: #d93025;
+}
+
+/* ---------- PHONE ---------- */
+
+@media (max-width: 600px) {
+
+    .topbar {
+        padding: 0 12px;
+    }
+
+    .logo {
+        font-size: 17px;
+    }
+
+    .dashboard {
+        display: block;
+    }
+
+    .stats {
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .email-content {
+        padding: 16px;
+    }
+
+    .email-info {
+        grid-template-columns: 65px 1fr;
+        font-size: 14px;
+    }
+
+    .email-body {
+        font-size: 15px;
+    }
+
+    .answer-buttons {
+        flex-direction: column;
+    }
+
+    .answer-buttons button {
+        width: 100%;
+    }
+
+    .timer {
+        text-align: center;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ---------- TOP BAR ---------- -->
+
+<header class="topbar">
+
+    <div class="logo">
+        🛡️ Phish<span>Guard</span>
+    </div>
+
+    <button class="language" onclick="changeLanguage()">
+        🇫🇷 Français
+    </button>
+
+</header>
+
+
+<div class="game-wrapper">
+
+    <!-- ---------- GAME ---------- -->
+
+    <div id="game">
+
+        <div class="dashboard">
+
+            <div class="stats">
+
+                <div>
+                    📧 <span id="questionText">Email</span>
+                    <span id="questionNumber">1</span>/12
+                </div>
+
+                <div class="hearts" id="hearts">
+                    ❤️ ❤️ ❤️
+                </div>
+
+                <div>
+                    🏆 <span id="score">0</span>
+                </div>
+
+            </div>
+
+            <div class="timer">
+                ⏱️ <span id="timer">30</span>s
+            </div>
+
+        </div>
+
+
+        <!-- ---------- EMAIL ---------- -->
+
+        <div class="email-window">
+
+            <div class="email-toolbar">
+                📥 Inbox &nbsp; | &nbsp; ⭐ &nbsp; ↩️ &nbsp; 🗑️
+            </div>
+
+            <div class="email-content">
+
+                <div class="email-info">
+
+                    <strong>From:</strong>
+                    <span id="sender"></span>
+
+                    <strong>To:</strong>
+                    <span>You</span>
+
+                    <strong>Subject:</strong>
+                    <span id="subject"></span>
+
+                </div>
+
+
+                <div class="email-body" id="emailBody"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ---------- ANSWERS ---------- -->
+
+        <div class="answer-buttons">
+
+            <button class="phishing" onclick="answer('phishing')">
+                🚨 <span id="phishingText">Phishing</span>
+            </button>
+
+            <button class="safe" onclick="answer('safe')">
+                ✅ <span id="safeText">Safe</span>
+            </button>
+
+        </div>
+
+
+        <!-- ---------- RESULT ---------- -->
+
+        <div class="result" id="result">
+
+            <h3 id="resultTitle"></h3>
+
+            <p id="resultExplanation"></p>
+
+            <div class="clues">
+
+                <strong id="cluesTitle">Phishing clues:</strong>
+
+                <div id="clueList"></div>
+
+            </div>
+
+            <button class="next-button" onclick="nextEmail()">
+                Next Email →
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ---------- FINAL SCREEN ---------- -->
+
+    <div class="final" id="final">
+
+        <h1 id="finalTitle">🎉 Game Complete!</h1>
+
+        <div class="final-score">
+            <span id="finalScore">0</span>/12
+        </div>
+
+        <p id="finalMessage"></p>
+
+        <div class="high-score">
+            🏆 High Score:
+            <strong id="highScore">0</strong>
+        </div>
+
+        <div class="review">
+
+            <h3 id="reviewTitle">
+                📊 Phishing clues you missed
+            </h3>
+
+            <div id="reviewList"></div>
+
+        </div>
+
+        <button class="restart-button" onclick="restartGame()">
+            🔄 Play Again
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   EMAIL DATABASE
+===================================================== */
+
+const emails = [
+
+    {
+        sender: "security@paypa1-example.com",
+        subject: "URGENT: Your account will be locked!",
+        body: `
+            Hello,<br><br>
+
+            We detected unusual activity on your account.<br><br>
+
+            <span class="suspicious">Your account will be permanently locked today.</span><br><br>
+
+            Please <span class="suspicious">click this link</span> to verify your information.<br><br>
+
+            Thank you,<br>
+            Security Team
+        `,
+        answer: "phishing",
+        clues: [
+            "Suspicious sender address",
+            "Creates urgency",
+            "Asks you to click a link",
+            "Requests information"
+        ]
+    },
+
+    {
+        sender: "teacher@myschool.example",
+        subject: "Science project reminder",
+        body: `
+            Hi,<br><br>
+
+            Just a reminder that your science project is due
+            this Friday.<br><br>
+
+            Please bring your project to class.<br><br>
+
+            Thanks!
+        `,
+        answer: "safe",
+        clues: []
+    },
+
+    {
+        sender: "winner@free-prizes.example",
+        subject: "🎉 YOU WON $1,000,000!",
+        body: `
+            CONGRATULATIONS!!!<br><br>
+
+            You have been selected to receive
+            <span class="suspicious">$1,000,000!</span><br><br>
+
+            To claim your prize, send us your
+            <span class="suspicious">password, bank information and address.</span><br><br>
+
+            <span class="suspicious">ACT NOW!!!</span>
+        `,
+        answer: "phishing",
+        clues: [
+            "Unexpected prize",
+            "Requests sensitive information",
+            "Uses extreme urgency"
+        ]
+    },
+
+    {
+        sender: "library@citylibrary.example",
+        subject: "Your library book is due soon",
+        body: `
+            Hello,<br><br>
+
+            This is a reminder that your library book
+            is due next week.<br><br>
+
+            You can return it during normal library hours.<br><br>
+
+            Thank you!
+        `,
+        answer: "safe",
+        clues: []
+    },
+
+    {
+        sender: "support@micros0ft-security.example",
+        subject: "Your password has expired",
+        body: `
+            Dear User,<br><br>
+
+            Your password has expired.<br><br>
+
+            <span class="suspicious">Enter your current password and new password.</span><br><br>
+
+            <span class="suspicious">Your account will be deleted in 30 minutes.</span>
+        `,
+        answer: "phishing",
+        clues: [
+            "Suspicious sender",
+            "Requests a password",
+            "Uses a threatening deadline"
+        ]
+    },
+
+    {
+        sender: "coach@school.example",
+        subject: "Basketball practice update",
+        body: `
+            Hi everyone,<br><br>
+
+            Basketball practice tomorrow will start at
+            4:00 PM instead of 3:30 PM.<br><br>
+
+            See you there!
+        `,
+        answer: "safe",
+        clues: []
+    },
+
+    {
+        sender: "account-alert@bank-security.example",
+        subject: "Suspicious payment detected",
+        body: `
+            We detected a suspicious payment on your account.<br><br>
+
+            Do not reply with your password or security code.<br><br>
+
+            Please contact your bank using the phone number
+            on your bank card or its official website.
+        `,
+        answer: "safe",
+        clues: []
+    },
+
+    {
+        sender: "instagram.verify123@example.com",
+        subject: "Your account will be deleted",
+        body: `
+            Your account has violated our rules.<br><br>
+
+            <span class="suspicious">You have 10 minutes to confirm your account.</span><br><br>
+
+            Send us your
+            <span class="suspicious">password and verification code</span>
+            or your account will be deleted.<br><br>
+
+            <span class="suspicious">Click here NOW!</span>
+        `,
+        answer: "phishing",
+        clues: [
+            "Urgent deadline",
+            "Requests password",
+            "Requests verification code",
+            "Suspicious sender",
+            "Suspicious link"
+        ]
+    },
+
+    {
+        sender: "events@school.example",
+        subject: "School dance information",
+        body: `
+            Hi students,<br><br>
+
+            The school dance will take place Friday evening.<br><br>
+
+            Tickets can be purchased at the school office.<br><br>
+
+            See you there!
+        `,
+        answer: "safe",
+        clues: []
+    },
+
+    {
+        sender: "delivery@parcel-alert.example",
+        subject: "Your package could not be delivered",
+        body: `
+            Hello,<br><br>
+
+            We could not deliver your package.<br><br>
+
+            <span class="suspicious">Pay a $2 fee immediately</span>
+            to reschedule your delivery.<br><br>
+
+            <span class="suspicious">Click the link below to pay.</span>
+        `,
+        answer: "phishing",
+        clues: [
+            "Unexpected delivery message",
+            "Requests money",
+            "Creates urgency",
+            "Asks you to click a link"
+        ]
+    },
+
+    {
+        sender: "principal@school.example",
+        subject: "School closure tomorrow",
+        body: `
+            Hello students,<br><br>
+
+            Due to the weather forecast, school will be closed tomorrow.<br><br>
+
+            Please check the school website for updates.<br><br>
+
+            Stay safe!
+        `,
+        answer: "safe",
+        clues: []
+    },
+
+    {
+        sender: "security@account-check.example",
+        subject: "Verify your identity immediately",
+        body: `
+            Dear customer,<br><br>
+
+            <span class="suspicious">We noticed suspicious activity.</span><br><br>
+
+            Please send us your
+            <span class="suspicious">password and two-factor authentication code.</span><br><br>
+
+            <span class="suspicious">Failure to respond within 15 minutes will lock your account.</span>
+        `,
+        answer: "phishing",
+        clues: [
+            "Requests password",
+            "Requests security code",
+            "Creates urgency",
+            "Threatens account lock"
+        ]
+    }
+
+];
+
+
+/* =====================================================
+   GAME VARIABLES
+===================================================== */
+
+let current = 0;
+let score = 0;
+let lives = 3;
+let timeLeft = 30;
+let timerInterval;
+let answered = false;
+let language = "en";
+
+let missedClues = [];
+
+
+/* =====================================================
+   HIGH SCORE
+===================================================== */
+
+let highScore = Number(localStorage.getItem("phishingHighScore")) || 0;
+
+document.getElementById("highScore").textContent = highScore;
+
+
+/* =====================================================
+   LOAD EMAIL
+===================================================== */
+
+function loadEmail() {
+
+    clearInterval(timerInterval);
+
+    answered = false;
+
+    timeLeft = 30;
+
+    document.getElementById("timer").textContent = timeLeft;
+
+    const email = emails[current];
+
+    document.getElementById("questionNumber").textContent = current + 1;
+
+    document.getElementById("sender").textContent = email.sender;
+
+    document.getElementById("subject").textContent = email.subject;
+
+    document.getElementById("emailBody").innerHTML = email.body;
+
+    document.getElementById("score").textContent = score;
+
+    updateHearts();
+
+    document.getElementById("result").style.display = "none";
+
+    startTimer();
+}
+
+
+/* =====================================================
+   TIMER
+===================================================== */
+
+function startTimer() {
+
+    timerInterval = setInterval(() => {
+
+        timeLeft--;
+
+        document.getElementById("timer").textContent = timeLeft;
+
+        if (timeLeft <= 10) {
+            document.querySelector(".timer").classList.add("warning");
+        }
+
+        if (timeLeft <= 0) {
+
+            clearInterval(timerInterval);
+
+            if (!answered) {
+
+                loseLife();
+
+                showResult(false, "⏰ Time's up!");
+
+            }
+
+        }
+
+    }, 1000);
+}
+
+
+/* =====================================================
+   ANSWER
+===================================================== */
+
+function answer(choice) {
+
+    if (answered) return;
+
+    answered = true;
+
+    clearInterval(timerInterval);
+
+    const email = emails[current];
+
+    if (choice === email.answer) {
+
+        score++;
+
+        document.getElementById("score").textContent = score;
+
+        showResult(true, "✅ Correct!");
+
+    } else {
+
+        loseLife();
+
+        showResult(false, "❌ Incorrect!");
+
+    }
+
+}
+
+
+/* =====================================================
+   LOSE LIFE
+===================================================== */
+
+function loseLife() {
+
+    lives--;
+
+    updateHearts();
+
+    if (lives <= 0) {
+
+        setTimeout(() => {
+            finishGame();
+        }, 1000);
+
+    }
+
+}
+
+
+/* =====================================================
+   HEARTS
+===================================================== */
+
+function updateHearts() {
+
+    let hearts = "";
+
+    for (let i = 0; i < lives; i++) {
+        hearts += "❤️ ";
+    }
+
+    for (let i = lives; i < 3; i++) {
+        hearts += "🖤 ";
+    }
+
+    document.getElementById("hearts").textContent = hearts;
+}
+
+
+/* =====================================================
+   SHOW RESULT
+===================================================== */
+
+function showResult(correct, title) {
+
+    const email = emails[current];
+
+    document.getElementById("resultTitle").textContent = title;
+
+    if (correct) {
+
+        document.getElementById("resultExplanation").textContent =
+            "Great job! You correctly identified this email.";
+
+    } else {
+
+        document.getElementById("resultExplanation").textContent =
+            "Look carefully at the warning signs in this email.";
+
+        if (email.clues.length > 0) {
+
+            email.clues.forEach(clue => {
+
+                missedClues.push({
+                    email: email.subject,
+                    clue: clue
+                });
+
+            });
+
+        }
+
+    }
+
+
+    const clueList = document.getElementById("clueList");
+
+    clueList.innerHTML = "";
+
+    if (email.clues.length === 0) {
+
+        clueList.innerHTML =
+            "<div class='clue'>No major phishing warning signs.</div>";
+
+    } else {
+
+        email.clues.forEach(clue => {
+
+            const div = document.createElement("div");
+
+            div.className = "clue";
+
+            div.textContent = "⚠️ " + clue;
+
+            clueList.appendChild(div);
+
+        });
+
+    }
+
+    document.getElementById("result").style.display = "block";
+
+}
+
+
+/* =====================================================
+   NEXT EMAIL
+===================================================== */
+
+function nextEmail() {
+
+    if (lives <= 0) {
+
+        finishGame();
+
+        return;
+    }
+
+    current++;
+
+    if (current >= emails.length) {
+
+        finishGame();
+
+    } else {
+
+        document.querySelector(".timer").classList.remove("warning");
+
+        loadEmail();
+
+    }
+
+}
+
+
+/* =====================================================
+   FINISH GAME
+===================================================== */
+
+function finishGame() {
+
+    clearInterval(timerInterval);
+
+    document.getElementById("game").style.display = "none";
+
+    document.getElementById("final").style.display = "block";
+
+    document.getElementById("finalScore").textContent = score;
+
+    if (score > highScore) {
+
+        highScore = score;
+
+        localStorage.setItem("phishingHighScore", highScore);
+
+    }
+
+    document.getElementById("highScore").textContent = highScore;
+
+
+    if (score >= 10) {
+
+        document.getElementById("finalMessage").textContent =
+            "🏆 Amazing! You are excellent at spotting phishing attempts.";
+
+    } else if (score >= 7) {
+
+        document.getElementById("finalMessage").textContent =
+            "👏 Great job! You know many important phishing warning signs.";
+
+    } else if (score >= 4) {
+
+        document.getElementById("finalMessage").textContent =
+            "👍 Good start! Keep practicing your phishing detection skills.";
+
+    } else {
+
+        document.getElementById("finalMessage").textContent =
+            "📚 Keep learning! Knowing the warning signs can help protect you online.";
+
+    }
+
+
+    const review = document.getElementById("reviewList");
+
+    review.innerHTML = "";
+
+    if (missedClues.length === 0) {
+
+        review.innerHTML =
+            "<div class='review-item'>🎉 You didn't miss any phishing clues!</div>";
+
+    } else {
+
+        missedClues.forEach(item => {
+
+            const div = document.createElement("div");
+
+            div.className = "review-item";
+
+            div.innerHTML =
+                `<strong>${item.email}</strong><br>
+                 ⚠️ ${item.clue}`;
+
+            review.appendChild(div);
+
+        });
+
+    }
+
+}
+
+
+/* =====================================================
+   RESTART
+===================================================== */
+
+function restartGame() {
+
+    current = 0;
+
+    score = 0;
+
+    lives = 3;
+
+    missedClues = [];
+
+    document.getElementById("game").style.display = "block";
+
+    document.getElementById("final").style.display = "none";
+
+    loadEmail();
+
+}
+
+
+/* =====================================================
+   LANGUAGE SWITCH
+===================================================== */
+
+function changeLanguage() {
+
+    language = language === "en" ? "fr" : "en";
+
+    if (language === "fr") {
+
+        document.querySelector(".language").textContent =
+            "🇬🇧 English";
+
+        document.getElementById("questionText").textContent =
+            "Courriel";
+
+        document.getElementById("phishingText").textContent =
+            "Hameçonnage";
+
+        document.getElementById("safeText").textContent =
+            "Sécuritaire";
+
+        document.getElementById("cluesTitle").textContent =
+            "Indices d'hameçonnage :";
+
+        document.getElementById("reviewTitle").textContent =
+            "📊 Indices d'hameçonnage manqués";
+
+        document.getElementById("finalTitle").textContent =
+            "🎉 Jeu terminé!";
+
+    } else {
+
+        document.querySelector(".language").textContent =
+            "🇫🇷 Français";
+
+        document.getElementById("questionText").textContent =
+            "Email";
+
+        document.getElementById("phishingText").textContent =
+            "Phishing";
+
+        document.getElementById("safeText").textContent =
+            "Safe";
+
+        document.getElementById("cluesTitle").textContent =
+            "Phishing clues:";
+
+        document.getElementById("reviewTitle").textContent =
+            "📊 Phishing clues you missed";
+
+        document.getElementById("finalTitle").textContent =
+            "🎉 Game Complete!";
+
+    }
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+loadEmail();
+
+</script>
+
+</body>
+</html>
+```
